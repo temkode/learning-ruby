@@ -1,28 +1,34 @@
-def caesar_cipher_encrypt(plain_text, shift_amt)
-    encrypted_text = ''
-    plain_text.each_char do |letter|
-        unless letter == ' '
-            encrypted_text.concat((letter.ord + shift_amt).modulo(255).chr)
-        else
-            encrypted_text.concat(' ')
-        end
-    end
-    return encrypted_text
-end
+class Caesar
+    attr_accessor :key
 
-def caesar_cipher_decrypt(encrypted_text, shift_amt)
-    decrypted_text = ''
-    encrypted_text.each_char do |letter|
-        unless letter == ' '
-            decrypted_text.concat((letter.ord - shift_amt).modulo(255).chr)
-        else
-            decrypted_text.concat(' ')
-        end
+    def initialize(key)
+        @key = key
     end
-    return decrypted_text
+
+    def _shift(text, is_encrypting = true)
+        shifted_text = ''
+        text.each_char do |letter|
+            unless letter == ' '
+                shifted_index = is_encrypting ? letter.ord + key : letter.ord - key
+                shifted_text.concat(shifted_index.modulo(256).chr)
+            else
+                shifted_text.concat(' ')
+            end
+        end
+        return shifted_text
+    end
+
+    def encrypt(plain_text)
+        return _shift(plain_text)
+    end
+
+    def decrypt(encrypted_text)
+        return _shift(encrypted_text, false)
+    end
 end
  
-a = caesar_cipher_encrypt('hello world', 256)
-puts a
-
-puts caesar_cipher_decrypt(a, 256)
+caesar_cipher = Caesar.new(50)
+encrypted_text = caesar_cipher.encrypt('Hello World')
+decrypted_text = caesar_cipher.decrypt(encrypted_text)
+puts encrypted_text
+puts decrypted_text
